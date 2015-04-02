@@ -30,9 +30,8 @@ class ConnSqlite:
         self.cursor.execute(sql)
         self.conn.commit()
 
-    def select_sql(self, sql, dados):
-        self.cursor.execute(sql, dados)
-        self.result = self.cursor.fetchall()
+    def select_sql(self, sql, dados=[]):
+        self.result = self.cursor.execute(sql, dados)
 
         return self.result
 
@@ -42,6 +41,7 @@ if __name__ == '__main__':
     banco.create_table()
     dt_inicio = date(2015, 1, 10)
     dt_fim = date(2015, 3, 10)
+    '''
     try:
         with banco.conn:
             banco.insere_dados()
@@ -49,7 +49,10 @@ if __name__ == '__main__':
     except sqlite3.IntegrityError:
         print('Restrição de integridade violada!')
 
-    '''rs = banco.select_sql(banco.SQL_FERIADOS_BETWEEN, [(dt_inicio, dt_fim)])
+    '''
+    sql = '''SELECT id, strftime('%w', data), data FROM feriados LIMIT 10'''
+
+    rs = banco.select_sql(sql)
 
     for i in rs:
-        print(i)'''
+        print(i)

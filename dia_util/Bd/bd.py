@@ -50,9 +50,10 @@ if __name__ == '__main__':
         print('Restrição de integridade violada!')
 
     '''
-    sql = '''SELECT id, strftime('%w', data), data FROM feriados LIMIT 10'''
+    sql = '''SELECT COUNT(*) FROM feriados WHERE data BETWEEN ? AND ?
+            AND strftime('%w', data) NOT IN (0,6)'''
 
-    rs = banco.select_sql(sql)
-
+    rs = banco.select_sql(sql, [dt_inicio, dt_fim])
+    print(rs)
     for i in rs:
         print(i)

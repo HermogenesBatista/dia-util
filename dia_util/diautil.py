@@ -1,6 +1,9 @@
+from dia_util.Bd.bd import ConnSqlite
 import datetime
 
+
 class DiaUtil:
+    connSqlite = ConnSqlite()
 
     def __init__(self, data_inicio=datetime.date.today()):
         self.data_inicio = data_inicio
@@ -53,6 +56,8 @@ class DiaUtil:
            passando como parametro a data inicial e a data nova
            o terceiro parametro seria uma identificação, no meu caso a filial da
            empresa'''
+        date = self.verifica_feriado(date)
+
         return date
 
     def add_day(self, date, dias):
@@ -83,7 +88,25 @@ class DiaUtil:
         return 0
 
     def verifica_feriado(self, date):
-        pass
+        self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, [date, self.data_inicio])
+
+        self.results = len(self.feriados)
+        temp = date
+
+        while(self.results > 0):
+            for n in self.feriados:
+                date = self.add_day(date, 1)
+                dia_semana = self.verifica_dia(date)
+
+                if(dia_semana > 0):
+                    date = self.add_day(date, dia_semana)
+
+                self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, [temp, date])
+
+                self.results = len(self.feriados)
+                temp = date
+
+        return date
 
     def conta_dia_util(self, data_inicio, data_fim, ans=False):
         print(data_inicio, data_fim)
@@ -95,14 +118,14 @@ class DiaUtil:
 
         dia_semana_inicio = self.verifica_dia(data_inicio)
 
-        print(dia_semana_inicio)
+        #print(dia_semana_inicio)
         if(dia_semana_inicio>0):
             data_inicio = self.add_day(data_inicio, dia_semana_inicio)
 
         dia_semana_fim = self.verifica_dia(data_fim)
 
         if(dia_semana_fim > 0):
-            print(dia_semana_fim)
+            #print(dia_semana_fim)
             data_fim = self.add_day(data_fim, -dia_semana_fim)
 
         dias_corridos = data_fim - data_inicio

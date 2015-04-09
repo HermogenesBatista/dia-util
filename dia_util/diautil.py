@@ -3,14 +3,17 @@ import datetime
 
 
 class DiaUtil:
+
     connSqlite = ConnSqlite()
+    feriados = 0
+    results = []
 
     def __init__(self, data_inicio=datetime.date.today()):
         self.data_inicio = data_inicio
     
     def proximo_dia_util(self, date, dias_uteis, ans=False):
-        '''constroi uma data em dia útil, de acordo com os dias passados'''
-        '''Ainda não foi implementado receber uma data em string'''
+        ''' constroi uma data em dia útil, de acordo com os dias passados
+        Ainda não foi implementado receber uma data em string'''
 
         if(not date):
             date = self.data_inicio
@@ -27,7 +30,7 @@ class DiaUtil:
             dias_corridos = dias_extras*7
             #adicionando os dias corridos
             date = self.add_day(date, dias_corridos)
-            
+
             #removendo o excesso de dias uteis
             dias_uteis -=dias_extras*5
 
@@ -56,6 +59,7 @@ class DiaUtil:
            passando como parametro a data inicial e a data nova
            o terceiro parametro seria uma identificação, no meu caso a filial da
            empresa'''
+
         date = self.verifica_feriado(date)
 
         return date
@@ -88,12 +92,14 @@ class DiaUtil:
         return 0
 
     def verifica_feriado(self, date):
-        self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, [date, self.data_inicio])
+        print('entrou')
+        self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, [self.data_inicio, date])
 
         self.results = len(self.feriados)
         temp = date
-
+        print(self.results)
         while(self.results > 0):
+            print(self.results)
             for n in self.feriados:
                 date = self.add_day(date, 1)
                 dia_semana = self.verifica_dia(date)
@@ -156,11 +162,10 @@ class DiaUtil:
 if __name__ == '__main__':
     data = DiaUtil()
     #print(data.data_inicio)
-    data2 = datetime.date(year=2015, month=8, day=28)
-    date3 = datetime.date(year=2040, month=3, day=30)
-    data_nova = data.proximo_dia_util(date=data2, dias_uteis=30, ans=True)
+    data2 = datetime.date(year=2001, month=2, day=20)
+    data_nova = data.proximo_dia_util(date=data2, dias_uteis=20, ans=True)
     print(data_nova)
-    conta_dia_util = data.conta_dia_util(data_nova, data2, ans=True)
+    conta_dia_util = data.conta_dia_util(data2, data_nova, ans=True)
     print(conta_dia_util)
     #conta_dia_util = data.conta_dia_util(data2, date3, ans=False)
     #print(conta_dia_util)

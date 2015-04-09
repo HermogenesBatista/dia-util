@@ -7,13 +7,14 @@ __author__ = 'Administrador'
 '''CRÉDITOS DOS FERIADOS NACIONAIS ENCONTRADOS ATÉ 2076
     http://www.anbima.com.br/feriados/feriados.asp'''
 
+
 class ConnSqlite:
 
     SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS feriados(id integer primary key, data date, descricao text)"
 
-    SQL_FERIADOS_BETWEEN = '''SELECT strftime('%w', data) as diasemana, descricao, data
-                                FROM feriados WHERE data BETWEEN ? AND ?
-                                AND strftime('%w', data) NOT IN (0,6)'''
+    SQL_FERIADOS_BETWEEN = '''SELECT strftime('%w', data) as diasemana, descricao, data FROM feriados
+                                WHERE data BETWEEN ? AND ?
+                           AND strftime('%w', data) NOT IN (0,6)'''
 
     SQL_DADOS_FERIADOS = '''INSERT INTO `feriados` VALUES (?,?,?)'''
 
@@ -32,9 +33,10 @@ class ConnSqlite:
         self.conn.commit()
 
     def select_sql(self, sql, dados=[]):
-        self.result = self.cursor.execute(sql, dados)
-
-        return self.result.fetchall()
+        print(dados)
+        self.result = self.cursor.execute(sql, dados).fetchall()
+        print(self.result)
+        return self.result
 
 
 if __name__ == '__main__':
@@ -54,7 +56,7 @@ if __name__ == '__main__':
     sql = '''SELECT COUNT(*) FROM feriados WHERE data BETWEEN ? AND ?
             AND strftime('%w', data) NOT IN (0,6)'''
 
-    rs = banco.select_sql(banco.SQL_FERIADOS_BETWEEN, [dt_inicio, dt_fim])
-    print(len(rs))
+    rs = banco.select_sql(sql, [dt_inicio, dt_fim])
+    print(rs)
     for i in rs:
         print(i)

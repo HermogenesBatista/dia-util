@@ -33,9 +33,8 @@ class ConnSqlite:
         self.conn.commit()
 
     def select_sql(self, sql, dados=[]):
-        print(dados)
         self.result = self.cursor.execute(sql, dados).fetchall()
-        print(self.result)
+
         return self.result
 
 

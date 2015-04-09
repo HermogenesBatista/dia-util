@@ -92,14 +92,14 @@ class DiaUtil:
         return 0
 
     def verifica_feriado(self, date):
-        print('entrou')
+        #print('entrou')
         self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, [self.data_inicio, date])
 
         self.results = len(self.feriados)
         temp = date
-        print(self.results)
+        #print(self.results)
         while(self.results > 0):
-            print(self.results)
+            #print(self.results)
             for n in self.feriados:
                 date = self.add_day(date, 1)
                 dia_semana = self.verifica_dia(date)
@@ -124,38 +124,48 @@ class DiaUtil:
 
         dia_semana_inicio = self.verifica_dia(data_inicio)
 
-        #print(dia_semana_inicio)
+        print(dia_semana_inicio)
         if(dia_semana_inicio>0):
             data_inicio = self.add_day(data_inicio, dia_semana_inicio)
 
         dia_semana_fim = self.verifica_dia(data_fim)
-
+        print(dia_semana_fim)
         if(dia_semana_fim > 0):
-            #print(dia_semana_fim)
             data_fim = self.add_day(data_fim, -dia_semana_fim)
 
         dias_corridos = data_fim - data_inicio
         qtd_semanas = dias_corridos.days//7
-
+        print(dias_corridos)
         dias_corridos_rest = dias_corridos.days - qtd_semanas*7
-
+        print(dias_corridos_rest)
         temp_dia_inicio = int(data_inicio.strftime('%w'))
 
         if(dias_corridos_rest>=5 or (dias_corridos_rest>2
                                     and (temp_dia_inicio == 5
                                          or temp_dia_inicio == 4))):
             dias_corridos_rest -=2
-
+        print(dias_corridos_rest, ' dia rest')
         dia_util = qtd_semanas*5
-
+        print(dia_util)
         if(ans):    
             dia_util +=1
 
+        print(dia_util,' - ')
+        dados = [data_inicio, data_fim]
+        dados.sort()
+        self.feriados = self.connSqlite.select_sql(self.connSqlite.SQL_FERIADOS_BETWEEN, dados)
+
+        self.results = len(self.feriados)
+
+        print(self.results)
+        print(dias_corridos_rest)
         #levando em consideração que o negativo significa "atraso" em dias uteis
         if(dia_util<0):
             dia_util -= dias_corridos_rest
         else:
             dia_util += dias_corridos_rest
+
+
 
         return dia_util
         
@@ -165,7 +175,7 @@ if __name__ == '__main__':
     data2 = datetime.date(year=2001, month=2, day=20)
     data_nova = data.proximo_dia_util(date=data2, dias_uteis=20, ans=True)
     print(data_nova)
-    conta_dia_util = data.conta_dia_util(data2, data_nova, ans=True)
+    conta_dia_util = data.conta_dia_util(data_nova, data2, ans=True)
     print(conta_dia_util)
     #conta_dia_util = data.conta_dia_util(data2, date3, ans=False)
     #print(conta_dia_util)

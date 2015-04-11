@@ -1,6 +1,6 @@
 from dia_util.Bd.bd import ConnSqlite
 import datetime
-
+import os
 
 class DiaUtil:
 
@@ -10,6 +10,8 @@ class DiaUtil:
 
     def __init__(self, data_inicio=datetime.date.today()):
         self.data_inicio = data_inicio
+        print(os.path.join(self.connSqlite.BASE_DIRS, 'feriados.db'))
+
     
     def proximo_dia_util(self, date, dias_uteis, ans=False):
         ''' constroi uma data em dia útil, de acordo com os dias passados

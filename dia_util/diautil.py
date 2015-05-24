@@ -13,14 +13,12 @@ class DiaUtil:
 
     def __init__(self, data_inicio=datetime.date.today()):
         self.data_inicio = data_inicio
-        print(os.path.join(self.connSqlite.BASE_DIRS, 'feriados.db'))
 
-    
     def proximo_dia_util(self, date, dias_uteis, ans=False):
         ''' constroi uma data em dia util, de acordo com os dias passados
         Ainda nao foi implementado receber uma data em string'''
 
-        if(not date):
+        if not date:
             date = self.data_inicio
         else:
             self.data_inicio = date
@@ -69,7 +67,6 @@ class DiaUtil:
         add = datetime.timedelta(days=dias)
         date +=add
         return date
-                
 
     def verifica_dia(self, date):
         '''metodo preparado para receber ou uma string como data ou um objeto
@@ -86,7 +83,6 @@ class DiaUtil:
         if(temp == 6):
             return 2
 
-        
         elif(temp == 0):
             return 1
 

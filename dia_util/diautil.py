@@ -123,7 +123,6 @@ class DiaUtil:
 
         dia_semana_inicio = self.verifica_dia(data_inicio)
 
-
         if(dia_semana_inicio>0):
             data_inicio = self.add_day(data_inicio, dia_semana_inicio)
 
@@ -133,8 +132,13 @@ class DiaUtil:
             data_fim = self.add_day(data_fim, -dia_semana_fim)
 
         dias_corridos = data_fim - data_inicio
-        qtd_semanas = dias_corridos.days//7
-        dias_corridos_rest = dias_corridos.days - qtd_semanas*7
+
+        positive = True
+        if dias_corridos.days < 0:
+            positive = False
+
+        qtd_semanas = abs(dias_corridos.days)//7
+        dias_corridos_rest = abs(dias_corridos.days) - qtd_semanas*7
         temp_dia_inicio = int(data_inicio.strftime('%w'))
 
         if(dias_corridos_rest >= 5 or (dias_corridos_rest > 2 and (temp_dia_inicio == 5
@@ -143,10 +147,7 @@ class DiaUtil:
 
         dia_util = qtd_semanas*5
         if(ans):
-            if(dia_util<0):
-                dia_util -= 1
-            else:
-                dia_util += 1
+            dia_util += 1
 
         dados = [data_inicio, data_fim]
         dados.sort()
@@ -155,22 +156,19 @@ class DiaUtil:
         self.results = len(self.feriados)
 
         if(self.results > 0):
-            if(dia_util<0):
-                dia_util += self.results
-            else:
-                dia_util -= self.results
+            dia_util -= self.results
 
         #levando em consideração que o negativo significa "atraso" em dias uteis
-        if(dia_util<0):
-            dia_util -= dias_corridos_rest
-        else:
-            dia_util += dias_corridos_rest
+        dia_util += dias_corridos_rest
+
+        if not positive:
+            dia_util = -dia_util
 
         return dia_util
         
 if __name__ == '__main__':
     data = DiaUtil()
-    data2 = datetime.date(year=2015, month=5, day=22)
+    data2 = datetime.date(year=2015, month=5, day=12)
     data_nova = data.proximo_dia_util(date=data2, dias_uteis=31, ans=True)
     print(data_nova)
     conta_dia_util = data.conta_dia_util(data_nova, data2, ans=True)

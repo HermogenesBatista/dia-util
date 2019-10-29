@@ -3,7 +3,7 @@ from django.db import models
 
 class Holiday(models.Model):
     SQL_FERIADOS_BETWEEN = ""
-    date = models.DateField()
+    date = models.DateField(unique=True)
     description = models.CharField(max_length=50)
 
     class Meta:

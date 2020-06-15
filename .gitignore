@@ -3,6 +3,7 @@ Thumbs.db
 ehthumbs.db
 .idea/*
 __pycache__
+dia_util.egg-info
 
 # Folder config file
 Desktop.ini

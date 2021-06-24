@@ -8,8 +8,8 @@ class Holiday(models.Model):
 
     class Meta:
         db_table = "Holiday"
-        verbose_name = 'Holiday'
-        verbose_name_plural = 'Holidays'
+        verbose_name = 'Feriado'
+        verbose_name_plural = 'Feriados'
 
     def __str__(self):
         return f"{self.description} - {self.date}"
